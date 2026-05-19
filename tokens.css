@@ -1,0 +1,169 @@
+/* ─── Escola do Parceiro · Design Tokens ─────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800&display=swap');
+
+:root {
+  /* surfaces (warm neutrals) */
+  --ep-bg:          oklch(0.985 0.005 80);
+  --ep-bg-2:        oklch(0.965 0.008 75);
+  --ep-surface:     #ffffff;
+  --ep-surface-2:   oklch(0.97  0.008 70);
+  --ep-surface-3:   oklch(0.94  0.012 70);
+  --ep-border:      oklch(0.91  0.008 75);
+  --ep-border-strong: oklch(0.85 0.012 75);
+
+  /* ink */
+  --ep-ink:         oklch(0.20  0.015 60);
+  --ep-ink-2:       oklch(0.36  0.015 60);
+  --ep-muted:       oklch(0.55  0.012 60);
+  --ep-muted-2:     oklch(0.68  0.010 60);
+
+  /* primary — yellow (surfaces, hero bg, fills) */
+  --ep-primary:        #ffdd00;
+  --ep-primary-hover:  oklch(0.93 0.20 96);     /* slightly darker yellow */
+  --ep-primary-deep:   oklch(0.30 0.10 70);     /* dark warm brown — text on yellow */
+  --ep-primary-tint:   oklch(0.97 0.07 100);    /* very soft yellow */
+  --ep-primary-tint-2: oklch(0.93 0.14 100);    /* stronger yellow tint */
+
+  /* cta — orange (buttons + foreground accents) */
+  --ep-cta:        #fc4c02;
+  --ep-cta-hover:  oklch(0.58 0.22 38);
+  --ep-cta-deep:   oklch(0.48 0.20 38);
+  --ep-cta-tint:   oklch(0.96 0.035 40);
+
+  /* status accents */
+  --ep-new:        oklch(0.55 0.14 155);   /* green · Novo */
+  --ep-new-tint:   oklch(0.94 0.04 155);
+  --ep-pop:        oklch(0.55 0.15 65);    /* amber · Popular */
+  --ep-pop-tint:   oklch(0.94 0.06 75);
+  --ep-rec:        oklch(0.50 0.14 265);   /* indigo · Recomendado */
+  --ep-rec-tint:   oklch(0.93 0.04 265);
+  --ep-start:      oklch(0.40 0.04 60);    /* slate · Comece aqui */
+  --ep-start-tint: oklch(0.92 0.008 70);
+
+  /* radius / shadow */
+  --ep-r-sm: 10px;
+  --ep-r:    14px;
+  --ep-r-md: 18px;
+  --ep-r-lg: 24px;
+  --ep-shadow-sm: 0 1px 2px rgba(33,20,10,.04), 0 1px 3px rgba(33,20,10,.04);
+  --ep-shadow:    0 1px 2px rgba(33,20,10,.04), 0 6px 18px rgba(33,20,10,.06);
+  --ep-shadow-lg: 0 2px 4px rgba(33,20,10,.04), 0 16px 36px rgba(33,20,10,.10);
+
+  /* type */
+  --ep-font-display: 'Inter Tight', system-ui, sans-serif;
+  --ep-font-body:    'Inter', system-ui, sans-serif;
+}
+
+/* ─── reset (scoped to .ep-root) ──────────────────────────────────── */
+.ep-root, .ep-root *, .ep-root *::before, .ep-root *::after {
+  box-sizing: border-box;
+}
+.ep-root {
+  font-family: var(--ep-font-body);
+  color: var(--ep-ink);
+  background: var(--ep-bg);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  text-rendering: optimizeLegibility;
+}
+.ep-root h1, .ep-root h2, .ep-root h3, .ep-root h4 {
+  font-family: var(--ep-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.15;
+  color: var(--ep-ink);
+}
+.ep-root p { margin: 0; }
+.ep-root button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+.ep-root a { color: inherit; text-decoration: none; }
+
+/* hide scrollbars for horizontal rails */
+.ep-rail::-webkit-scrollbar { display: none; }
+.ep-rail { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* card hover bump */
+.ep-card { transition: transform .18s ease, box-shadow .18s ease; }
+.ep-card:hover { transform: translateY(-2px); box-shadow: var(--ep-shadow); }
+.ep-card:active { transform: translateY(0); }
+
+/* primary button — orange */
+.ep-root .ep-btn-primary {
+  background: var(--ep-cta);
+  color: #fff;
+  border-radius: 999px;
+  padding: 14px 22px;
+  font-weight: 600;
+  font-size: 15px;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: background .15s ease, transform .1s ease;
+  box-shadow: 0 1px 2px rgba(252,76,2,.20), 0 6px 16px rgba(252,76,2,.18);
+}
+.ep-root .ep-btn-primary:hover { background: var(--ep-cta-hover); }
+.ep-root .ep-btn-primary:active { transform: translateY(1px); }
+.ep-root .ep-btn-secondary {
+  background: var(--ep-surface);
+  color: var(--ep-ink);
+  border-radius: 999px;
+  padding: 13px 21px;
+  font-weight: 600;
+  font-size: 15px;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--ep-border-strong);
+  transition: background .15s ease;
+}
+.ep-root .ep-btn-secondary:hover { background: var(--ep-surface-2); }
+.ep-root .ep-btn-ghost {
+  color: var(--ep-ink-2);
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.ep-root .ep-btn-ghost:hover { color: var(--ep-cta); }
+
+/* chip */
+.ep-root .ep-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ep-ink-2);
+  white-space: nowrap;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.ep-root .ep-chip:hover { border-color: var(--ep-cta); color: var(--ep-cta); }
+.ep-root .ep-chip[data-active="true"] {
+  background: var(--ep-ink);
+  border-color: var(--ep-ink);
+  color: #fff;
+}
+
+/* badge */
+.ep-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+/* shimmer for "novo" pulse */
+@keyframes ep-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46,139,87,0); }
+  50%      { box-shadow: 0 0 0 6px rgba(46,139,87,.10); }
+}
+.ep-pulse { animation: ep-pulse 2.4s ease-in-out infinite; }

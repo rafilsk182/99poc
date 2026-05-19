@@ -1,5 +1,234 @@
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=99food-styleguide.html">
-<title>99Food Style Guide</title>
-</head><body></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Escola do Parceiro · Hi-fi prototype</title>
+<link rel="stylesheet" href="tokens.css"/>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; }
+  body { font-family: 'Inter', system-ui, sans-serif; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<!-- catalog data → window -->
+<script src="data.js"></script>
+
+<!-- shared components → window -->
+<script type="text/babel" src="components.jsx"></script>
+
+<!-- screens → window -->
+<script type="text/babel" src="mobile-landing.jsx"></script>
+<script type="text/babel" src="mobile-video.jsx"></script>
+<script type="text/babel" src="desktop-landing.jsx"></script>
+<script type="text/babel" src="desktop-video.jsx"></script>
+<script type="text/babel" src="tracking-doc.jsx"></script>
+
+<!-- design canvas shell -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<!-- compose -->
+<script type="text/babel" data-presets="env,react">
+const { useState } = React;
+
+// ─── Tweakable defaults (persisted via __edit_mode_set_keys) ─────
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "showBadges": true,
+  "denseRails": false
+}/*EDITMODE-END*/;
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // simple "open video" callback (no actual routing — artboards are static slices)
+  const onOpen = (v) => { /* artboards self-contain their own state */ };
+
+  return (
+    <>
+      <DesignCanvas>
+        <DCSection
+          id="landing"
+          title="Escola do Parceiro · Landing"
+          subtitle="Hub público de vídeos curtos · mobile-first com versão desktop">
+          <DCArtboard id="m-landing" label="Mobile · Landing (390 × 4440)" width={390} height={4440}>
+            <MobileLanding onOpen={onOpen}/>
+          </DCArtboard>
+          <DCArtboard id="d-landing" label="Desktop · Landing (1280 × 4700)" width={1280} height={4700}>
+            <DesktopLanding onOpen={onOpen}/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="video"
+          title="Página individual de vídeo"
+          subtitle="URL própria por vídeo · player + meta + relacionados + compartilhar">
+          <DCArtboard id="m-video" label="Mobile · Vídeo (390 × 1800)" width={390} height={1800}>
+            <MobileVideo/>
+          </DCArtboard>
+          <DCArtboard id="m-share" label="Mobile · Link copiado" width={390} height={1800}>
+            <MobileVideoShared/>
+          </DCArtboard>
+          <DCArtboard id="d-video" label="Desktop · Vídeo (1280 × 1180)" width={1280} height={1180}>
+            <DesktopVideo/>
+          </DCArtboard>
+          <DCArtboard id="d-share" label="Desktop · Compartilhar aberto" width={1280} height={1180}>
+            <DesktopVideoShared/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="states"
+          title="Estados & microinterações"
+          subtitle="Hover, em reprodução, link copiado, badges, chips, CTAs">
+          <DCArtboard id="states" label="Componentes & estados" width={960} height={920}>
+            <StatesGallery/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="tracking"
+          title="Tracking · GA4 / GTM"
+          subtitle="Eventos, parâmetros e notas técnicas para o time de desenvolvimento">
+          <DCArtboard id="tracking" label="Eventos sugeridos" width={960} height={1220}>
+            <TrackingDoc/>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Paleta">
+          <div style={{ display:'flex', gap: 8, padding:'8px 0', alignItems:'center' }}>
+            <span style={{ width: 28, height: 28, borderRadius: 8, background:'#ffdd00', border:'1px solid rgba(0,0,0,.08)' }}/>
+            <span style={{ width: 28, height: 28, borderRadius: 8, background:'#fc4c02' }}/>
+            <span style={{ fontSize: 12, color:'#555', marginLeft: 6 }}>Yellow + Orange (fixo)</span>
+          </div>
+        </TweakSection>
+        <TweakSection label="Conteúdo">
+          <TweakToggle
+            label="Mostrar selos"
+            value={t.showBadges}
+            onChange={(v) => setTweak('showBadges', v)}/>
+          <TweakToggle
+            label="Rails mais densos"
+            value={t.denseRails}
+            onChange={(v) => setTweak('denseRails', v)}/>
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+// ── small helper variants used inside artboards ──────────────────
+function MobileVideoShared() {
+  // pre-opened share sheet + copied state for an artboard snapshot
+  const [open, setOpen] = React.useState(true);
+  const [copied] = React.useState(true);
+  return (
+    <div style={{ position:'relative' }}>
+      <MobileVideo/>
+      <div style={{ position:'absolute', inset: 0, pointerEvents:'none' }}>
+        {/* overlay a pre-opened share sheet with copied = true */}
+        <div style={{ position:'absolute', inset: 0, background:'rgba(20,15,10,0.45)' }}/>
+        <div style={{
+          position:'absolute', left: 0, right: 0, bottom: 0,
+          background:'#ffffff',
+          borderRadius:'24px 24px 0 0',
+          padding:'14px 16px 28px',
+          boxShadow:'0 -10px 40px rgba(20,15,10,0.18)',
+          fontFamily:"'Inter', system-ui, sans-serif",
+        }}>
+          <div style={{ width: 36, height: 4, borderRadius: 999, background:'#dad4c8', margin:'0 auto 14px' }}/>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 14 }}>
+            <h3 style={{ fontSize: 17, margin: 0, fontFamily:"'Inter Tight', system-ui", fontWeight: 700 }}>Compartilhar vídeo</h3>
+            <span style={{ color:'#8c8474', fontSize: 18 }}>×</span>
+          </div>
+          <div style={{
+            display:'flex', alignItems:'center', gap: 12,
+            padding:'14px 14px',
+            borderRadius: 18,
+            background:'oklch(0.94 0.04 155)',
+            border:'1px solid oklch(0.55 0.14 155)',
+          }}>
+            <span style={{
+              width: 36, height: 36, borderRadius: 10,
+              background:'oklch(0.55 0.14 155)', color:'#fff',
+              display:'flex', alignItems:'center', justifyContent:'center',
+            }}>{Ic.check(18)}</span>
+            <span style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color:'oklch(0.20 0.015 60)' }}>Link copiado</div>
+              <div style={{ fontSize: 12, color:'oklch(0.36 0.015 60)' }}>Agora é só enviar para sua equipe.</div>
+            </span>
+          </div>
+          <div style={{
+            width:'100%', display:'flex', alignItems:'center', gap: 12, marginTop: 10,
+            padding:'14px 14px', borderRadius: 18,
+            background:'oklch(0.97 0.008 70)',
+            border:'1px solid oklch(0.91 0.008 75)',
+          }}>
+            <span style={{
+              width: 36, height: 36, borderRadius: 10,
+              background:'#25D366', color:'#fff',
+              display:'flex', alignItems:'center', justifyContent:'center',
+            }}>{Ic.whatsapp(18)}</span>
+            <span style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color:'oklch(0.20 0.015 60)' }}>WhatsApp</div>
+              <div style={{ fontSize: 12, color:'oklch(0.36 0.015 60)' }}>Compartilhar com sua equipe</div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DesktopVideoShared() {
+  // Render desktop video with share popover forced open + copied
+  // We re-mount with a key + use a wrapper that auto-opens.
+  return (
+    <DesktopVideoWithShareOpen/>
+  );
+}
+
+function DesktopVideoWithShareOpen() {
+  // Just wraps the regular DesktopVideo; we'll click the share button via effect.
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (!ref.current) return;
+    // find the share button by aria-text content
+    const btns = ref.current.querySelectorAll('button');
+    for (const b of btns) {
+      if (b.textContent.trim().startsWith('Compartilhar link')) {
+        b.click();
+        // also click copy after a tick
+        setTimeout(() => {
+          const root = ref.current;
+          if (!root) return;
+          const copyBtns = root.querySelectorAll('button');
+          for (const c of copyBtns) {
+            if (c.textContent.trim().startsWith('Copiar link') || c.textContent.trim().startsWith('Link copiado')) {
+              c.click(); break;
+            }
+          }
+        }, 50);
+        break;
+      }
+    }
+  }, []);
+  return <div ref={ref}><DesktopVideo/></div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+</body>
+</html>
